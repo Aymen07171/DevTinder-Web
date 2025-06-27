@@ -3,13 +3,21 @@ import './App.css'
 import Body from './Body'
 import Profile from './profile'
 import Login from './Login'
-
+import { Provider } from 'react-redux'
+import { store } from './Utils/appStore' // Import the Redux store
+import Feed from './Feed'
 function App() {
   return (
+    <Provider store={store}>
+    {/* Wrap your application with the Redux Provider */}
+    {/* This allows you to access the Redux store in your components */}
+
+
     <div className="App">
       <BrowserRouter basename='/'>
         <Routes>
           <Route path='/' element={<Body />} >
+          <Route path='/feed' element={<Feed />} />
           <Route path='/login' element={<Login />} />
           <Route path='/profile' element={<Profile />} />
           </Route>
@@ -17,6 +25,7 @@ function App() {
         </Routes>
       </BrowserRouter>
     </div>
+    </Provider>
   )
 }
 

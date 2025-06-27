@@ -1,9 +1,14 @@
     import { useState } from 'react'
     import axios from 'axios'
+import {  useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 
-    const Login = () => {
+
+const Login = () => {
     const [emailId, setEmail] = useState('ayman@gmail.com')
     const [password, setPassword] = useState('ayman123')
+    const dispatch = useDispatch()    
+    const navigate = useNavigate()
 
     const handleSubmit = async (event) => {
         event.preventDefault()
@@ -14,7 +19,11 @@
             { withCredentials: true }
         )
         if (res.status === 200) {
-            console.log('Login successful:', res.data)
+            // Assuming the response contains user data
+            console.log(res.data)
+            // Dispatch an action to update the user state in Redux store
+        dispatch({ type: 'user/addUser', payload: res.data.user })    
+        return navigate('/feed') // Redirect to feed after successful login
         }
         } catch (error) {
         console.error('Login failed:', error)
