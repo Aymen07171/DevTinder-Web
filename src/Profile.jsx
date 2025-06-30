@@ -3,9 +3,9 @@
     const Profile = () => {
     return (
         <div>
-        
+            <p> Ayman ELATTAR </p>
         </div>
     )
     }
 
-    export default Profile
+export default Profile

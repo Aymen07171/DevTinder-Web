@@ -1,7 +1,10 @@
-    import { useState } from 'react'
-    import axios from 'axios'
+import { useState } from 'react'
+import axios from 'axios'
 import {  useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import { BASE_URL } from './Utils/constants'
+// Login.jsx
+
 
 
 const Login = () => {
@@ -10,11 +13,16 @@ const Login = () => {
     const dispatch = useDispatch()    
     const navigate = useNavigate()
 
+
+    // Handle form submission
+    // Use emailId instead of email for consistency with your backend
+
+
+    
     const handleSubmit = async (event) => {
         event.preventDefault()
         try {
-        const res = await axios.post(
-            'http://localhost:3000/login',
+        const res = await axios.post( BASE_URL +  '/login',
             { emailId, password }, // <-- use emailId here!
             { withCredentials: true }
         )
@@ -53,12 +61,12 @@ const Login = () => {
                 <span className="label-text">Password</span>
                 </label>
                 <input
-                type="password"
-                placeholder="password"
-                className="input input-bordered"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                required
+                    type="password"
+                    placeholder="password"
+                    className="input input-bordered"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    required
                 />
             </div>
             <div className="form-control mt-6">
@@ -72,4 +80,4 @@ const Login = () => {
     )
     }
 
-    export default Login
+export default Login

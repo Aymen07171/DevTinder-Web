@@ -1,11 +1,17 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './App.css'
 import Body from './Body'
-import Profile from './profile'
 import Login from './Login'
 import { Provider } from 'react-redux'
 import { store } from './Utils/appStore' // Import the Redux store
 import Feed from './Feed'
+import Profile from './Profile' // Import the Profile component
+
+
+
+
+
+
 function App() {
   return (
     <Provider store={store}>
