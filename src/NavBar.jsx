@@ -1,11 +1,18 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
+import axios from 'axios'
+import { useDispatch, useSelector } from 'react-redux'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
+import { BASE_URL } from './Utils/constants'
+import { removeUser } from './Utils/userSlice'
+// NavBar.jsx
+
 
 const NavBar = () => {
   const users = useSelector(state => state.user)
   // Since your user state is an array, get the first user if exists
   const user = users && users.length > 0 ? users[0] : null
+
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   // Choose avatar and welcome name based on email
   let avatarUrl = "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
@@ -18,6 +25,28 @@ const NavBar = () => {
       avatarUrl = user.avatarUrl
     }
   }
+
+
+  const handleLogout =  async () => {
+    // Implement logout logic here, e.g., clear user state, redirect to login
+    try {
+      // Clear user state
+
+          await axios.post(BASE_URL + '/logout', {
+
+        }, {withCredentials: true})
+
+      dispatch(removeUser()) // Assuming you have a removeUser action
+      return navigate("/login")
+
+    } catch (error) {
+      console.error("Logout failed:", error)
+    }
+  }
+
+
+
+
 
   return (
     <div>
@@ -48,7 +77,7 @@ const NavBar = () => {
               </Link>
             </li>
             <li><a>Settings</a></li>
-            <li><a>Logout</a></li>
+            <li><a  onClick={handleLogout}>Logout</a></li>
           </ul>
 
 

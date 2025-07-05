@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-const initialState = [] // Use an array to allow push
+const initialState = []
 
 const usersSlice = createSlice({
   name: 'user',
@@ -9,8 +9,8 @@ const usersSlice = createSlice({
     addUser: (state, action) => {
       state.push(action.payload)
     },
-    removeUser: (state, action) => {
-      return state.filter(user => user.id !== action.payload.id)
+    removeUser: () => {
+      return [] // Clear all users on logout
     },
   },
 })
