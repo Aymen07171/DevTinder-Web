@@ -1,52 +1,34 @@
 import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link, Navigate, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { BASE_URL } from './Utils/constants'
 import { removeUser } from './Utils/userSlice'
+
 // NavBar.jsx
-
-
 const NavBar = () => {
-  const users = useSelector(state => state.user)
-  // Since your user state is an array, get the first user if exists
-  const user = users && users.length > 0 ? users[0] : null
+
+
+const users = useSelector(state => state.user)
+const user = Array.isArray(users) && users.length > 0 ? users[0] : null
+
+
+
 
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  // Choose avatar and welcome name based on email
-  let avatarUrl = "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-  if (user) {
-    if (user.emailId === "admin@example.com") {
-      avatarUrl = "https://api.dicebear.com/7.x/identicon/svg?seed=admin"
-    } else if (user.emailId === "ayman@gmail.com") {
-      avatarUrl = "https://api.dicebear.com/7.x/identicon/svg?seed=ayman"
-    } else if (user.avatarUrl) {
-      avatarUrl = user.avatarUrl
-    }
-  }
 
 
-  const handleLogout =  async () => {
-    // Implement logout logic here, e.g., clear user state, redirect to login
+
+  const handleLogout = async () => {
     try {
-      // Clear user state
-
-          await axios.post(BASE_URL + '/logout', {
-
-        }, {withCredentials: true})
-
-      dispatch(removeUser()) // Assuming you have a removeUser action
-      return navigate("/login")
-
+      await axios.post(`${BASE_URL}/logout`, {}, { withCredentials: true })
+      dispatch(removeUser())
+      navigate("/login")
     } catch (error) {
       console.error("Logout failed:", error)
     }
   }
-
-
-
-
 
   return (
     <div>
@@ -54,6 +36,7 @@ const NavBar = () => {
         <div className="flex-1">
           <Link to="/" className="btn btn-ghost text-xl">DevTinder 👨‍💻</Link>
         </div>
+
         <div className="flex gap-2">
           {user ? (
             <div className="dropdown dropdown-end flex items-center">
@@ -61,26 +44,25 @@ const NavBar = () => {
                 <div className="w-10 rounded-full">
                   <img
                     alt="User Avatar"
-                    src={avatarUrl}
+                    src={user.photoUrl}
                   />
                 </div>
               </div>
               <span className="font-semibold">Welcome, {user.firstName}</span>
 
-          <ul
-            tabIndex={0}
-            className="menu menu-sm dropdown-content bg-base-200 rounded-box z-1 mt-[10rem] w-52 p-5 shadow">
-            <li>
-              <Link to="/profile" className="justify-between">
-                Profile
-                <span className="badge">New</span>
-              </Link>
-            </li>
-            <li><a>Settings</a></li>
-            <li><a  onClick={handleLogout}>Logout</a></li>
-          </ul>
-
-
+              <ul
+                tabIndex={0}
+                className="menu menu-sm dropdown-content bg-base-200 rounded-box z-10 mt-[10rem] w-52 p-5 shadow"
+              >
+                <li>
+                  <Link to="/profile" className="justify-between">
+                    Profile
+                    <span className="badge">New</span>
+                  </Link>
+                </li>
+                <li><a>Settings</a></li>
+                <li><a onClick={handleLogout}>Logout</a></li>
+              </ul>
             </div>
           ) : (
             <a className="btn btn-primary" href="/login">Login</a>
