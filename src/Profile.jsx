@@ -1,11 +1,33 @@
-    import React from 'react'
+    import EditProfile from './EditProfile'
+    import { useSelector } from 'react-redux'
+
+    import UserCard from './UserCard'
 
     const Profile = () => {
+    const users = useSelector((store) => store.user)
+    const user = Array.isArray(users) && users.length > 0 ? users[0] : null
+
+    // If user is not found, return null or a loading state
+   
+
+
+
     return (
-        <div>
-            <p> Ayman ELATTAR </p>
+        <div className="min-h-screen bg-base-200 p-4">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {user && (
+            <div className="bg-base-100 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
+                <UserCard user={user} />
+            </div>
+            )}
+            {user && (
+            <div className="bg-base-100 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
+                <EditProfile user={user} />
+            </div>
+            )}
+        </div>
         </div>
     )
     }
 
-export default Profile
+    export default Profile

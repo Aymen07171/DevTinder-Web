@@ -19,7 +19,7 @@ function App() {
     {/* This allows you to access the Redux store in your components */}
 
 
-    <div className="App">
+    <div className="bg-base-100">
       <BrowserRouter basename='/'>
         <Routes>
           <Route path='/' element={<Body />} >
