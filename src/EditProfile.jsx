@@ -3,10 +3,9 @@
     import axios from 'axios'
     import { addUser } from './Utils/userSlice'
     import { BASE_URL } from './Utils/constants'
+    import UserCard from './UserCard'
 
     const EditProfile = ({ user }) => {
-    const dispatch = useDispatch()
-
     const [firstName, setFirstName] = useState(user.firstName || '')
     const [lastName, setLastName] = useState(user.lastName || '')
     const [emailId, setEmailId] = useState(user.emailId || '')
@@ -17,32 +16,37 @@
         Array.isArray(user.skills) ? user.skills.join(', ') : user.skills || ''
     )
     const [error, setError] = useState('')
+    const dispatch = useDispatch()
 
-const saveProfile = async (e) => {
-e.preventDefault()
-try {
-    const res = await axios.patch(
-    BASE_URL + '/profile/edit',
-    {
-        userId: user.userId, // <-- Add this line
-        firstName,
-        lastName,
-        emailId,
-        age,
-        gender,
-        photoUrl,
-        skills: skills.split(',').map(s => s.trim()).filter(Boolean),
-    },
-    { withCredentials: true }
-    )
-    dispatch(addUser(res.data.user || res.data.data || res.data))
-    setError('')
-    console.log('Profile updated successfully', res.data)
-} catch (err) {
-    setError(err.response?.data?.message || err.message)
-    console.error('Error updating profile', err)
-}
-}
+    const saveProfile = async (e) => {
+        e.preventDefault()
+        // Build updateData with only provided fields
+        const updateData = { userId: user.userId || user._id || user.id }
+        if (emailId !== '') updateData.emailId = emailId
+        if (firstName !== '') updateData.firstName = firstName
+        if (lastName !== '') updateData.lastName = lastName
+        if (age !== '') updateData.age = age
+        if (photoUrl !== '') updateData.photoUrl = photoUrl
+        if (skills !== '') updateData.skills = skills.split(',').map(s => s.trim()).filter(Boolean)
+        if (gender !== '') updateData.gender = gender
+
+        try {
+        const res = await axios.patch(
+            BASE_URL + '/profile/edit',
+            updateData,
+            { withCredentials: true }
+        )
+        dispatch(addUser(res.data.user))
+        setError('')
+        console.log('Profile updated successfully', res.data)
+        } catch (err) {
+        setError(err.response?.data?.message || err.message)
+        console.error('Error updating profile', err)
+        }
+    }
+
+    console.log("user object:", user);
+console.log("userId being sent:", user.userId, user._id, user.id);
 
     return (
         <div>
@@ -118,8 +122,8 @@ try {
                     required
                 >
                     <option value="">Select gender</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
+                    <option value="male">male</option>
+                    <option value="female">female</option>
                 </select>
                 </div>
 
@@ -139,14 +143,14 @@ try {
 
                 <div className="form-control">
                 <label className="label">
-                    <span className="label-text">Bio</span>
+                    <span className="label-text">Skills (comma separated)</span>
                 </label>
-                <textarea
-                    placeholder="Type your bio"
-                    className="textarea textarea-bordered"
+                <input
+                    type="text"
+                    placeholder="e.g. JavaScript, React, Node.js"
+                    className="input input-bordered"
                     value={skills}
                     onChange={e => setSkills(e.target.value)}
-                    rows={5}
                 />
                 </div>
 
@@ -155,15 +159,24 @@ try {
                 )}
 
                 <div className="form-control mt-6">
-                <button className="btn btn-primary" type="submit" onClick={saveProfile}>
+                <button className="btn btn-primary" type="submit">
                     Save Profile
                 </button>
                 </div>
             </form>
             </div>
         </div>
+        <UserCard user={{
+            userId: user.userId || user._id || user.id,
+            firstName,
+            lastName,
+            emailId,
+            age,
+            gender,
+            photoUrl,
+            skills: skills.split(',').map(s => s.trim()).filter(Boolean)
+        }} />
         </div>
-
     )
     }
 
