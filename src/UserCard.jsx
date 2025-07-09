@@ -7,7 +7,7 @@ const UserCard = ({ user }) => {
     <div className="flex justify-center items-center min-h-screen shadow-lg p-4">
       <div className="max-w-sm w-full bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
         {/* Figure */}
-        <figure className="w-full h-64 overflow-hidden">
+        <figure className="w-full h-[30rem]  overflow-hidden">
           <img
             src={user.photoUrl}
             alt={`${user.firstName} ${user.lastName}`}

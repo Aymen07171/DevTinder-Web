@@ -34,7 +34,7 @@ const user = Array.isArray(users) && users.length > 0 ? users[0] : null
     <div>
       <div className="navbar bg-base-200 shadow-sm">
         <div className="flex-1">
-          <Link to="/" className="btn btn-ghost text-xl">DevTinder 👨‍💻</Link>
+          <Link to="/feed" className="btn btn-ghost text-xl">DevTinder 👨‍💻</Link>
         </div>
 
         <div className="flex gap-2">
@@ -60,7 +60,9 @@ const user = Array.isArray(users) && users.length > 0 ? users[0] : null
                     <span className="badge">New</span>
                   </Link>
                 </li>
-                <li><a>Settings</a></li>
+                <li>
+                  <Link to="/connections">Connections</Link>
+                </li>
                 <li><a onClick={handleLogout}>Logout</a></li>
               </ul>
             </div>

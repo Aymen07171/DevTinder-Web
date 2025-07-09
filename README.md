@@ -33,6 +33,9 @@
 
 - Build the user card on feed 
 
+- Edit Profile Feature 
+- Show Toast Meassage on save of profile
+
 
 
 
