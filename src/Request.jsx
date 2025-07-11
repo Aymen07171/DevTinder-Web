@@ -28,121 +28,127 @@ const Requests = () => {
         fetchRequest();
     }, [dispatch]);
 
+    // Move reviewRequest function outside useEffect and make it async
+    const reviewRequest = async (status, _id) => {
+        try {
+            const res = await axios.post(`${BASE_URL}/request/review/${status}/${_id}`, {}, {
+                withCredentials: true,
+            });
+
+            console.log(`Request ${status}:`, res.data);
+            
+            // Refresh requests after accepting/rejecting
+            const updatedRes = await axios.get(`${BASE_URL}/user/requests/received`, {
+                withCredentials: true,
+            });
+            dispatch(addRequests(updatedRes.data || []));
+
+        } catch (err) {
+            console.error('Error reviewing request:', err);
+        }
+    };
+
     if (!requests || requests.length === 0) {
         return (
             <div className="container mx-auto px-4 py-8">
-                <h1 className="text-3xl font-bold text-center my-4">No Requests</h1>
-                <p className="text-center text-gray-500">You don't have any pending requests.</p>
+                <div className="text-center">
+                    <h1 className="text-4xl font-bold mb-4">No Requests</h1>
+                    <p className="text-base-content/60">You don't have any pending requests.</p>
+                </div>
             </div>
         );
     }
 
-    const handleAccept = async (requestId) => {
-        try {
-            await axios.post(`${BASE_URL}/user/requests/accept/${requestId}`, {}, {
-                withCredentials: true,
-            });
-            // Refresh requests after accepting
-            const res = await axios.get(`${BASE_URL}/user/requests/received`, {
-                withCredentials: true,
-            });
-            dispatch(addRequests(res.data || []));
-        } catch (err) {
-            console.error('Error accepting request:', err);
-        }
-    };
-
-    const handleReject = async (requestId) => {
-        try {
-            await axios.post(`${BASE_URL}/user/requests/reject/${requestId}`, {}, {
-                withCredentials: true,
-            });
-            // Refresh requests after rejecting
-            const res = await axios.get(`${BASE_URL}/user/requests/received`, {
-                withCredentials: true,
-            });
-            dispatch(addRequests(res.data || []));
-        } catch (err) {
-            console.error('Error rejecting request:', err);
-        }
-    };
-
     return (
         <div className="container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold text-center my-4">Connection Requests</h1>
+            <h1 className="text-4xl font-bold text-center mb-8">Connection Requests</h1>
             
-            <div className="max-w-2xl mx-auto space-y-4">
+            <div className="max-w-4xl mx-auto space-y-6">
                 {requests.map((request) => (
-                    <div key={request._id} className="bg-base-300 rounded-lg shadow-md p-6 border">
-                        <div className="flex items-center space-x-4">
-                            {/* Profile Picture */}
-                            <img 
-                                src={request.fromUserId.photoUrl} 
-                                alt={`${request.fromUserId.firstName} ${request.fromUserId.lastName}`}
-                                className="w-16 h-16 rounded-full object-cover"
-                            />
-                            
-                            {/* User Info */}
-                            <div className="flex-1">
-                                <h3 className="text-xl font-semibold">
-                                    {request.fromUserId.firstName} {request.fromUserId.lastName}
-                                </h3>
-                                <p className="text-gray-600">Age: {request.fromUserId.age}</p>
-                                <p className="text-gray-600">Gender: {request.fromUserId.gender}</p>
+                    <div key={request._id} className="card bg-base-100 shadow-xl">
+                        <div className="card-body">
+                            <div className="flex items-center space-x-6">
+                                {/* Profile Picture */}
+                                <div className="avatar">
+                                    <div className="w-20 h-20 rounded-full">
+                                        <img 
+                                            src={request.fromUserId.photoUrl} 
+                                            alt={`${request.fromUserId.firstName} ${request.fromUserId.lastName}`}
+                                            className="rounded-full object-cover"
+                                        />
+                                    </div>
+                                </div>
                                 
-                                {/* Skills */}
-                                {request.fromUserId.skills && request.fromUserId.skills.length > 0 && (
-                                    <div className="mt-2">
-                                        <p className="text-sm font-medium text-gray-700">Skills:</p>
-                                        <div className="flex flex-wrap gap-1 mt-1">
-                                            {request.fromUserId.skills.map((skill, index) => (
-                                                <span 
-                                                    key={index}
-                                                    className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full"
-                                                >
-                                                    {skill}
-                                                </span>
-                                            ))}
+                                {/* User Info */}
+                                <div className="flex-1">
+                                    <h2 className="card-title text-2xl">
+                                        {request.fromUserId.firstName} {request.fromUserId.lastName}
+                                    </h2>
+                                    
+                                    <div className="flex gap-4 mt-2">
+                                        <div className="badge badge-outline">
+                                            Age: {request.fromUserId.age}
+                                        </div>
+                                        <div className="badge badge-outline">
+                                            {request.fromUserId.gender}
                                         </div>
                                     </div>
-                                )}
-                                
-                                {/* Request Status */}
-                                <div className="mt-2">
-                                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                        request.status === 'accepted' 
-                                            ? 'bg-green-100 text-green-800' 
-                                            : request.status === 'rejected'
-                                            ? 'bg-red-100 text-red-800'
-                                            : 'bg-yellow-100 text-yellow-800'
-                                    }`}>
-                                        {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
-                                    </span>
+                                    
+                                    {/* Skills */}
+                                    {request.fromUserId.skills && request.fromUserId.skills.length > 0 && (
+                                        <div className="mt-4">
+                                            <p className="text-sm font-semibold mb-2">Skills:</p>
+                                            <div className="flex flex-wrap gap-2">
+                                                {request.fromUserId.skills.map((skill, index) => (
+                                                    <div key={index} className="badge badge-primary badge-sm">
+                                                        {skill}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
-                            </div>
-                            
-                            {/* Action Buttons - Only show if status is pending */}
-                            {request.status === 'pending' && (
-                                <div className="flex flex-col space-y-2">
+                                
+                                {/* Action Buttons */}
+                                <div className="flex flex-col gap-3">
                                     <button
-                                        onClick={() => handleAccept(request._id)}
-                                        className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors"
+                                        onClick={() => reviewRequest("accepted", request._id)}
+                                        className="btn btn-success btn-sm"
                                     >
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                        </svg>
                                         Accept
                                     </button>
+
                                     <button
-                                        onClick={() => handleReject(request._id)}
-                                        className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
+                                        onClick={() => reviewRequest("rejected", request._id)}
+                                        className="btn btn-error btn-sm"
                                     >
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
                                         Reject
                                     </button>
                                 </div>
-                            )}
-                        </div>
-                        
-                        {/* Request Date */}
-                        <div className="mt-4 text-sm text-gray-500">
-                            Request sent: {new Date(request.createdAt).toLocaleDateString()}
+                            </div>
+                            
+                            {/* Request Date and Status */}
+                            <div className="divider"></div>
+                            <div className="flex justify-between items-center">
+                                <div className="text-sm opacity-60">
+                                    Request sent: {new Date(request.createdAt).toLocaleDateString()}
+                                </div>
+                                <div className={`badge ${
+                                    request.status === 'accepted' 
+                                        ? 'badge-success' 
+                                        : request.status === 'rejected'
+                                        ? 'badge-error'
+                                        : 'badge-warning'
+                                }`}>
+                                    {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 ))}

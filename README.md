@@ -34,7 +34,8 @@
 - Edit Profile Feature 
 - Show Toast Meassage on save of profile
 - See all my connections 
-
+- New Page - See all my Connections
+- New Page - See all my Connections Requests 
 
 
 
