@@ -7,8 +7,7 @@ import { store } from './Utils/appStore' // Import the Redux store
 import Feed from './Feed'
 import Profile from './Profile' // Import the Profile component
 import Connections from './connections' // Import the Connections component
-
-
+import Request from '../src/Request' // Import the Request component
 
 
 
@@ -28,6 +27,7 @@ function App() {
           <Route path='/profile' element={<Profile />} />
           {/*  Add connections Route   */}
           <Route path='/connections' element={<Connections />} />
+          <Route path='/requests' element={<Request />} />
           {/* Add more routes as needed */}
           
           </Route>

@@ -63,6 +63,9 @@ const user = Array.isArray(users) && users.length > 0 ? users[0] : null
                 <li>
                   <Link to="/connections">Connections</Link>
                 </li>
+                  <li>
+                  <Link to="/requests">Connection Request</Link>
+                </li>
                 <li><a onClick={handleLogout}>Logout</a></li>
               </ul>
             </div>
